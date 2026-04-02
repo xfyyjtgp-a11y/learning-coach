@@ -56,7 +56,7 @@ Learning Coach 将"掌握"分为三个层次：
 
 ```bash
 # 克隆仓库
-git clone https://github.com/你的用户名/learning-coach.git
+git clone https://github.com/mosqlee/learning-coach.git
 cd learning-coach
 
 # 直接运行（无需安装依赖，纯 Python 标准库）
