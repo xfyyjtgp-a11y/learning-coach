@@ -38,6 +38,64 @@ Learning Coach 将"掌握"分为三个层次：
 | 30% - 60% | 进阶文章 → 练习题 → 动手实践 |
 | 60% - 80% | 项目实践 → 教给他人 → 新场景应用 |
 
+### 苏格拉底式追问 (v1.2.0)
+
+基于6维度追问框架，帮助零基础学习者深度思考：
+
+```
+澄清 → 假设 → 证据 → 视角 → 后果 → 反思
+```
+
+**特点**：
+- **自动启用**：零基础用户建档时自动启用 SOCRATIC_PRIORITY 模式
+- **最多3轮**：每个学习目标最多3轮追问，避免过度追问
+- **随时退出**：输入"直接解释"可跳过追问，获得直接讲解
+- **维度循环**：按顺序探索6个认知维度
+
+**示例对话**：
+
+```
+教练> socratic 监督学习
+
+🤔 【苏格拉底式追问 · 第1/3轮】
+
+📍 维度：澄清
+
+❓ 你具体指的是什么？
+
+💭 提示：能举个例子吗？
+
+━━━━━━━━━━━━━━━━━━━━
+[直接解释] 跳过追问，直接讲解
+[继续追问] 继续深入探索
+━━━━━━━━━━━━━━━━━━━━
+
+教练> answer 我知道是用来预测的，但不太清楚具体怎么用
+
+💡 回答中包含疑问
+
+🤔 【苏格拉底式追问 · 第2/3轮】
+
+📍 维度：假设
+
+❓ 这个结论背后有哪些前提？
+
+━━━━━━━━━━━━━━━━━━━━
+[直接解释] 跳过追问，直接讲解
+[继续追问] 继续深入探索
+━━━━━━━━━━━━━━━━━━━━
+
+教练> explain
+
+📚 用户选择直接解释
+已探索维度：澄清, 假设
+追问轮数：2
+
+📊 估计掌握度：25%
+
+正在生成直接解释...
+```
+
 ---
 
 ## 功能特性
@@ -47,6 +105,7 @@ Learning Coach 将"掌握"分为三个层次：
 - ✅ **多目标管理** - 同时追踪多个学习主题
 - ✅ **认知循环记录** - 完整记录每次学习过程
 - ✅ **思维导图生成** - Mermaid 格式，可视化学习路径
+- ✅ **苏格拉底式追问** (v1.2.0) - 6维度追问框架引导深度思考
 
 ---
 
@@ -69,6 +128,9 @@ python scripts/coach.py
 # 开始新主题
 python scripts/coach.py start 机器学习
 
+# 开始新主题（零基础，自动启用苏格拉底模式）
+python scripts/coach.py start 机器学习 --level 零基础
+
 # 查看进度
 python scripts/coach.py status
 
@@ -80,6 +142,11 @@ python scripts/coach.py mindmap
 
 # 导出数据
 python scripts/coach.py export
+
+# 苏格拉底式评估
+python scripts/coach.py socratic 监督学习
+python scripts/coach.py answer "你的回答"
+python scripts/coach.py explain  # 退出追问，获取直接讲解
 ```
 
 ### 交互模式
@@ -211,14 +278,15 @@ Learning Coach 原本是为 [OpenClaw](https://github.com/openclaw/openclaw) 设
 ```
 learning-coach/
 ├── README.md           # 本文档
-├── SKILL.md            # OpenClaw Skill 配置（可选）
+├── SKILL.md            # OpenClaw Skill 配置（详细文档）
 ├── scripts/
 │   └── coach.py        # 主程序
 ├── data/
-│   ├── profiles.json   # 学习档案（自动生成）
-│   └── records.json    # 认知循环日志（自动生成）
+│   ├── .gitkeep        # 保留目录结构
+│   ├── profiles.json   # 学习档案（自动生成，不提交）
+│   └ records.json    # 认知循环日志（自动生成，不提交）
 └── mindmaps/
-    └── *.md            # 生成的思维导图（自动生成）
+    └── *.md            # 生成的思维导图（自动生成，不提交）
 ```
 
 ---
