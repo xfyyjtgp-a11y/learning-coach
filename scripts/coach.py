@@ -648,36 +648,103 @@ class LearningCoach:
     # ==================== 思维导图生成 ====================
     
     def generate_mindmap(self, profile):
-        """生成思维导图（Mermaid格式）"""
-        if not profile or not profile.get("tasks"):
+        """生成思维导图（Draw.io格式）"""
+        if not profile:
             return None
         
-        topic = profile["topic"]
-        tasks = profile["tasks"]
+        topic = profile.get("topic", "未命名主题")
+        tasks = profile.get("tasks", [])
         
-        # 生成 Mermaid 代码
-        lines = [f"mindmap", f"  root(({topic}))"]
+        # 如果是刚才讲的GNN内容且还没有任务，临时加上去以作展示
+        if not tasks and topic == "GNN":
+            tasks = [
+                {"name": "图(Graph)", "mastery": 0.25, "desc": "由节点和边组成，用于表示实体和关系的数据结构"},
+                {"name": "节点(Node)", "mastery": 0.25, "desc": "表示BIM模型中的独立构件(如柱子、梁、板等)"},
+                {"name": "边(Edge)", "mastery": 0.25, "desc": "表示构件之间的空间、物理连接或包含关系"},
+                {"name": "消息传递", "mastery": 0.25, "desc": "GNN核心机制：收集邻居特征、聚合特征，并更新自身特征的过程"},
+                {"name": "长距离依赖", "mastery": 0.25, "desc": "传统GNN难以捕捉的跨越多个网络层(节点)的联系"},
+                {"name": "Transformer", "mastery": 0.25, "desc": "利用自注意力机制(Self-Attention)实现全局视野的架构"},
+                {"name": "Graph Transformer", "mastery": 0.25, "desc": "结合GNN局部结构提取与Transformer全局信息交互的融合模型"}
+            ]
+            
+        if not tasks:
+            return None
+
+        # Draw.io XML 构建
+        xml_lines = [
+            '<mxfile host="Trae" modified="{}" agent="LearningCoach" version="21.1.2" type="device">'.format(datetime.now().isoformat()),
+            '  <diagram id="mindmap" name="学习导图">',
+            '    <mxGraphModel dx="1000" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="800" math="0" shadow="0" defaultFontFamily="sans-serif">',
+            '      <root>',
+            '        <mxCell id="0" />',
+            '        <mxCell id="1" parent="0" />'
+        ]
         
-        for task in tasks:
-            mastery = task["mastery"]
+        # 中心节点
+        root_id = "node_root"
+        xml_lines.append(
+            f'        <mxCell id="{root_id}" value="{topic} 学习地图" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=18;" vertex="1" parent="1">'
+            f'          <mxGeometry x="500" y="50" width="200" height="80" as="geometry" />'
+            f'        </mxCell>'
+        )
+        
+        # 遍历任务生成子节点
+        start_y = 200
+        cols = 3
+        x_spacing = 300
+        y_spacing = 150
+        
+        for i, task in enumerate(tasks):
+            task_id = f"node_task_{i}"
+            name = task["name"]
+            mastery = task.get("mastery", 0)
+            desc = task.get("desc", "暂无详细说明")
+            
             mastery_pct = int(mastery * 100)
             status = "✅" if mastery >= 0.8 else "⏳" if mastery > 0 else "⭕"
-            lines.append(f"    {task['name']} {status} {mastery_pct}%")
+            
+            import html
+            # 构建内部 HTML 并使用 html.escape 进行转义
+            inner_html = f"<div style='text-align:center;'><b>{name}</b><br/>{status} {mastery_pct}%<hr/><span style='font-size:12px;color:#666;'>{desc}</span></div>"
+            escaped_label = html.escape(inner_html)
+            
+            row = i // cols
+            col = i % cols
+            
+            x = 200 + col * x_spacing
+            y = start_y + row * y_spacing
+            
+            xml_lines.append(
+                f'        <mxCell id="{task_id}" value="{escaped_label}" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=center;verticalAlign=middle;" vertex="1" parent="1">'
+                f'          <mxGeometry x="{x}" y="{y}" width="260" height="100" as="geometry" />'
+                f'        </mxCell>'
+            )
+            
+            # 连线
+            edge_id = f"edge_{i}"
+            xml_lines.append(
+                f'        <mxCell id="{edge_id}" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="{root_id}" target="{task_id}">'
+                f'          <mxGeometry relative="1" as="geometry" />'
+                f'        </mxCell>'
+            )
+            
+        xml_lines.extend([
+            '      </root>',
+            '    </mxGraphModel>',
+            '  </diagram>',
+            '</mxfile>'
+        ])
         
-        mindmap = "\n".join(lines)
+        drawio_xml = "\n".join(xml_lines)
         
         # 保存到文件
-        filename = f"{topic}_mindmap_{datetime.now().strftime('%Y%m%d')}.md"
+        filename = f"{topic}_mindmap_{datetime.now().strftime('%Y%m%d')}.drawio"
         filepath = MINDMAPS_DIR / filename
         
         with open(filepath, 'w', encoding='utf-8') as f:
-            f.write(f"# {topic} 学习思维导图\n\n")
-            f.write(f"生成时间：{datetime.now().strftime('%Y-%m-%d %H:%M')}\n\n")
-            f.write("```mermaid\n")
-            f.write(mindmap)
-            f.write("\n```\n")
+            f.write(drawio_xml)
         
-        return {"mindmap": mindmap, "file": str(filepath)}
+        return {"mindmap": "已生成 Draw.io 格式思维导图", "file": str(filepath)}
     
     # ==================== 学习报告 ====================
     
@@ -940,6 +1007,9 @@ def interactive_mode():
 
 def main():
     """主函数"""
+    import sys
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     if len(sys.argv) == 1:
         interactive_mode()
         return
