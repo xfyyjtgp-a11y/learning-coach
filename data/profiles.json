@@ -1,0 +1,60 @@
+{
+  "profiles": [
+    {
+      "id": "5d7dc712-8fab-4ce6-9693-6debf38019dd",
+      "topic": "GNN与BIM模型审核",
+      "level": "零基础",
+      "goal": "BIM模型审核实战",
+      "time_budget": null,
+      "created_at": "2026-04-09T22:47:52.569402",
+      "updated_at": "2026-04-09T22:55:00.000000",
+      "status": "active",
+      "tasks": [
+        {
+          "name": "图数据基础与BIM模型图结构化",
+          "mastery": 0.8,
+          "time_spent": "0.6h",
+          "status": "completed",
+          "importance": 5,
+          "last_study": "2026-04-09T22:55:00.000000"
+        },
+        {
+          "name": "GNN核心概念：消息传递与聚合",
+          "mastery": 0.0,
+          "time_spent": "0h",
+          "status": "in_progress",
+          "importance": 5,
+          "last_study": null
+        },
+        {
+          "name": "Transformer基础与注意力机制",
+          "mastery": 0.0,
+          "time_spent": "0h",
+          "status": "not_started",
+          "importance": 4,
+          "last_study": null
+        },
+        {
+          "name": "GNN+Transformer融合架构",
+          "mastery": 0.0,
+          "time_spent": "0h",
+          "status": "not_started",
+          "importance": 5,
+          "last_study": null
+        },
+        {
+          "name": "BIM模型审核实战案例",
+          "mastery": 0.0,
+          "time_spent": "0h",
+          "status": "not_started",
+          "importance": 3,
+          "last_study": null
+        }
+      ],
+      "current_task": "GNN核心概念：消息传递与聚合",
+      "overall_progress": 0.16,
+      "socratic_mode": "SOCRATIC_PRIORITY",
+      "socratic_round_count": 0
+    }
+  ]
+}
