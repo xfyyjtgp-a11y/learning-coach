@@ -1,0 +1,43 @@
+<mxfile host="65bd71144e">
+    <diagram id="mindmap" name="学习导图">
+        <mxGraphModel dx="1384" dy="1029" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="800" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="node_root" value="GNN与BIM模型审核 学习地图" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=18;" parent="1" vertex="1">
+                    <mxGeometry x="530" y="40" width="200" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="node_task_0" value="&lt;div style='text-align:center;'&gt;&lt;b&gt;图数据基础与BIM模型图结构化&lt;/b&gt;&lt;br/&gt;⭕ 0%&lt;hr/&gt;&lt;span style='font-size:12px;color:#666;'&gt;暂无详细说明&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="200" width="260" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="node_root" target="node_task_0" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="node_task_1" value="&lt;div style='text-align:center;'&gt;&lt;b&gt;GNN核心概念：消息传递与聚合&lt;/b&gt;&lt;br/&gt;⭕ 0%&lt;hr/&gt;&lt;span style='font-size:12px;color:#666;'&gt;暂无详细说明&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="500" y="200" width="260" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="node_root" target="node_task_1" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="node_task_2" value="&lt;div style='text-align:center;'&gt;&lt;b&gt;Transformer基础与注意力机制&lt;/b&gt;&lt;br/&gt;⭕ 0%&lt;hr/&gt;&lt;span style='font-size:12px;color:#666;'&gt;暂无详细说明&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="800" y="200" width="260" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="node_root" target="node_task_2" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="node_task_3" value="&lt;div style='text-align:center;'&gt;&lt;b&gt;GNN+Transformer融合架构&lt;/b&gt;&lt;br/&gt;⭕ 0%&lt;hr/&gt;&lt;span style='font-size:12px;color:#666;'&gt;暂无详细说明&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="200" y="350" width="260" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="node_root" target="node_task_3" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="node_task_4" value="&lt;div style='text-align:center;'&gt;&lt;b&gt;BIM模型审核实战案例&lt;/b&gt;&lt;br/&gt;⭕ 0%&lt;hr/&gt;&lt;span style='font-size:12px;color:#666;'&gt;暂无详细说明&lt;/span&gt;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;align=center;verticalAlign=middle;" parent="1" vertex="1">
+                    <mxGeometry x="500" y="350" width="260" height="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="edge_4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="node_root" target="node_task_4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
