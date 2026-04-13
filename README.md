@@ -94,7 +94,7 @@ python scripts/coach.py
 在交互模式下，你可以使用：
 - `status` - 查看进度
 - `list` - 列出所有学习目标
-- `mindmap` - 生成思维导图（直接在 Trae 编辑器中预览 Markdown）
+- `mindmap` - 生成思维导图，保存到 `mindmaps/<主题>/` 目录下
 - `socratic [知识点]` - 开始苏格拉底式评估
 - `answer "[你的回答]"` - 回答教练的追问
 - `explain` - 退出追问，获取直接讲解
@@ -108,7 +108,7 @@ python scripts/coach.py
 - ✅ **断点续学** - 自动保存进度，随时继续
 - ✅ **多目标管理** - 同时追踪多个学习主题
 - ✅ **认知循环记录** - 完整记录每次学习过程
-- ✅ **思维导图生成** - 支持生成 Mermaid 格式，利用 Trae 原生预览查看
+- ✅ **思维导图生成** - 按学习主题保存到 `mindmaps/<主题>/`，便于分类管理与持续复盘
 - ✅ **苏格拉底式追问** (v1.2.0) - 6维度追问框架引导深度思考
 
 ---
@@ -127,7 +127,12 @@ learning-coach/
 │   ├── profiles.json   # 学习档案（记录基础、目标、任务进度）
 │   └ records.json    # 认知循环日志（记录每次评估和决策）
 └── mindmaps/
-    └── *.md            # 自动生成的思维导图（可直接在 Trae 中预览）
+    ├── <主题A>/
+    │   ├── *_mindmap_YYYYMMDD.drawio   # 该主题下生成的思维导图
+    │   ├── learning_path_test.svg      # 该主题下生成的测试图
+    │   └── learning_path_test.png      # 该主题下生成的测试图
+    └── <主题B>/
+        └── ...
 ```
 
 ---

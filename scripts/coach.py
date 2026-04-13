@@ -15,6 +15,7 @@
 
 import json
 import os
+import re
 import sys
 import random
 from datetime import datetime
@@ -30,6 +31,13 @@ MINDMAPS_DIR = Path(__file__).parent.parent / "mindmaps"
 # 确保目录存在
 DATA_DIR.mkdir(parents=True, exist_ok=True)
 MINDMAPS_DIR.mkdir(parents=True, exist_ok=True)
+
+
+def safe_topic_dirname(topic):
+    """将学习主题转换为适合 Windows 文件夹的名称。"""
+    cleaned = re.sub(r'[<>:"/\\|?*]', "_", (topic or "").strip())
+    cleaned = re.sub(r"\s+", " ", cleaned).strip(" .")
+    return cleaned or "未命名主题"
 
 
 # ==================== 苏格拉底追问配置 ====================
@@ -737,9 +745,11 @@ class LearningCoach:
         
         drawio_xml = "\n".join(xml_lines)
         
-        # 保存到文件
+        # 保存到按主题分类的目录
+        topic_dir = MINDMAPS_DIR / safe_topic_dirname(topic)
+        topic_dir.mkdir(parents=True, exist_ok=True)
         filename = f"{topic}_mindmap_{datetime.now().strftime('%Y%m%d')}.drawio"
-        filepath = MINDMAPS_DIR / filename
+        filepath = topic_dir / filename
         
         with open(filepath, 'w', encoding='utf-8') as f:
             f.write(drawio_xml)
@@ -1056,6 +1066,39 @@ def main():
             return
         report = coach.generate_report(profile)
         print(json.dumps(report, ensure_ascii=False, indent=2))
+        
+    elif action == "update-task":
+        if not args:
+            print("用法：python coach.py update-task <任务名称> <掌握度>")
+            return
+        
+        parts = args.rsplit(' ', 1)
+        if len(parts) != 2:
+            print("用法：python coach.py update-task <任务名称> <掌握度>")
+            return
+            
+        task_name = parts[0].strip()
+        try:
+            mastery = float(parts[1])
+        except ValueError:
+            print("掌握度必须是一个数字")
+            return
+            
+        profile = coach.get_profile()
+        if not profile:
+            print("未找到学习档案")
+            return
+            
+        task = coach.update_task(profile["id"], task_name, mastery)
+        if task:
+            # 自动推进到下一个任务
+            next_task = coach.select_task(profile)
+            if next_task and next_task["name"] != profile.get("current_task"):
+                coach.update_profile(profile["id"], {"current_task": next_task["name"]})
+                
+            print(json.dumps(task, ensure_ascii=False, indent=2))
+        else:
+            print(f"未找到任务：{task_name}")
     
     elif action == "report":
         profile = coach.get_profile(args)
@@ -1099,6 +1142,15 @@ def main():
         if not args:
             print("用法：python coach.py answer <你的回答>")
             return
+        
+        # 恢复状态
+        profile = coach.get_profile()
+        if profile:
+            coach.current_profile = profile
+            coach.socratic_mode = True if profile.get("socratic_mode") == "SOCRATIC_PRIORITY" else False
+            # 恢复追问轮数
+            coach.socratic_questioner.current_round = profile.get("socratic_round_count", 0)
+            
         result = coach.continue_socratic_assessment(args)
         print(json.dumps(result, ensure_ascii=False, indent=2))
     

@@ -7,7 +7,7 @@
       "goal": "BIM模型审核实战",
       "time_budget": null,
       "created_at": "2026-04-09T22:47:52.569402",
-      "updated_at": "2026-04-09T22:55:00.000000",
+      "updated_at": "2026-04-10T15:33:07.431407",
       "status": "active",
       "tasks": [
         {
@@ -20,40 +20,85 @@
         },
         {
           "name": "GNN核心概念：消息传递与聚合",
-          "mastery": 0.0,
+          "mastery": 1.0,
           "time_spent": "0h",
-          "status": "in_progress",
+          "status": "completed",
           "importance": 5,
-          "last_study": null
+          "last_study": "2026-04-10T11:03:56.807634"
         },
         {
           "name": "Transformer基础与注意力机制",
-          "mastery": 0.0,
+          "mastery": 0.9,
           "time_spent": "0h",
-          "status": "not_started",
+          "status": "completed",
           "importance": 4,
-          "last_study": null
+          "last_study": "2026-04-10T11:11:43.210352"
         },
         {
           "name": "GNN+Transformer融合架构",
-          "mastery": 0.0,
+          "mastery": 0.9,
           "time_spent": "0h",
-          "status": "not_started",
+          "status": "completed",
           "importance": 5,
-          "last_study": null
+          "last_study": "2026-04-10T11:34:01.799756"
         },
         {
           "name": "BIM模型审核实战案例",
-          "mastery": 0.0,
+          "mastery": 0.9,
           "time_spent": "0h",
-          "status": "not_started",
+          "status": "completed",
           "importance": 3,
-          "last_study": null
+          "last_study": "2026-04-10T15:33:07.431381"
         }
       ],
-      "current_task": "GNN核心概念：消息传递与聚合",
-      "overall_progress": 0.16,
+      "current_task": "BIM模型审核实战案例",
+      "overall_progress": 0.9,
       "socratic_mode": "SOCRATIC_PRIORITY",
+      "socratic_round_count": 0
+    },
+    {
+      "id": "7d198ee3-be79-44a1-b5d5-68591ba9b46c",
+      "topic": "BIM模型审核中应用GNN+Transformer技术的落地实践实现",
+      "level": "有一定基础",
+      "goal": "系统学习落地实现",
+      "time_budget": null,
+      "created_at": "2026-04-10T16:47:02.523433",
+      "updated_at": "2026-04-10T16:47:02.523449",
+      "status": "active",
+      "tasks": [],
+      "current_task": null,
+      "overall_progress": 0.0,
+      "socratic_mode": null,
+      "socratic_round_count": 0
+    },
+    {
+      "id": "7bbca33c-fe0c-4121-b703-acd879d2cd6b",
+      "topic": "BIM模型审核中应用GNN+Transformer技术的落地实践实现",
+      "level": "有一定基础",
+      "goal": "系统学习落地实现",
+      "time_budget": null,
+      "created_at": "2026-04-13T09:16:26.797706",
+      "updated_at": "2026-04-13T09:16:26.797722",
+      "status": "active",
+      "tasks": [],
+      "current_task": null,
+      "overall_progress": 0.0,
+      "socratic_mode": null,
+      "socratic_round_count": 0
+    },
+    {
+      "id": "6f251860-c0a1-4975-9de4-5c17f49e8992",
+      "topic": "BIM模型审核中应用GNN+Transformer技术的落地实践实现",
+      "level": "有一定基础",
+      "goal": "系统学习落地实现",
+      "time_budget": null,
+      "created_at": "2026-04-13T09:18:27.983335",
+      "updated_at": "2026-04-13T09:18:27.983349",
+      "status": "active",
+      "tasks": [],
+      "current_task": null,
+      "overall_progress": 0.0,
+      "socratic_mode": null,
       "socratic_round_count": 0
     }
   ]
