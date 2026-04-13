@@ -100,6 +100,62 @@
       "overall_progress": 0.0,
       "socratic_mode": null,
       "socratic_round_count": 0
+    },
+    {
+      "id": "5351efbd-3c02-4759-bf33-4a4101856951",
+      "topic": "BIM模型审核中应用GNN+Transformer技术的落地实践实现",
+      "level": "有一定基础",
+      "goal": "系统学习落地实现",
+      "time_budget": null,
+      "created_at": "2026-04-13T17:32:42.496116",
+      "updated_at": "2026-04-13T17:39:55.689101",
+      "status": "active",
+      "tasks": [
+        {
+          "name": "BIM数据解析与图结构转换：实现IFC/Revit模型到图数据的工程化处理",
+          "mastery": 0.6,
+          "time_spent": "0h",
+          "status": "in_progress",
+          "importance": 5,
+          "last_study": "2026-04-13T17:39:55.687944"
+        },
+        {
+          "name": "特征工程与属性映射：提取BIM构件几何与属性特征并映射到图节点",
+          "mastery": 0.0,
+          "time_spent": "0h",
+          "status": "not_started",
+          "importance": 5,
+          "last_study": null
+        },
+        {
+          "name": "GNN+Transformer混合模型开发：设计适用于BIM审核的层次化注意力机制架构",
+          "mastery": 0.0,
+          "time_spent": "0h",
+          "status": "not_started",
+          "importance": 4,
+          "last_study": null
+        },
+        {
+          "name": "自动化审核规则引擎开发：集成模型预测与硬性规范校验的混合审核系统",
+          "mastery": 0.0,
+          "time_spent": "0h",
+          "status": "not_started",
+          "importance": 4,
+          "last_study": null
+        },
+        {
+          "name": "系统部署与实战闭环：实现自动化审核报告输出并根据反馈进行模型微调",
+          "mastery": 0.0,
+          "time_spent": "0h",
+          "status": "not_started",
+          "importance": 3,
+          "last_study": null
+        }
+      ],
+      "current_task": "特征工程与属性映射：提取BIM构件几何与属性特征并映射到图节点",
+      "overall_progress": 0.12,
+      "socratic_mode": "SOCRATIC_PRIORITY",
+      "socratic_round_count": 0
     }
   ]
 }

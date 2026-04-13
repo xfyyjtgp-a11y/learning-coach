@@ -1017,9 +1017,6 @@ def interactive_mode():
 
 def main():
     """主函数"""
-    import sys
-    import io
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
     if len(sys.argv) == 1:
         interactive_mode()
         return
@@ -1067,6 +1064,31 @@ def main():
         report = coach.generate_report(profile)
         print(json.dumps(report, ensure_ascii=False, indent=2))
         
+    elif action == "add-task":
+        if not args:
+            print("用法：python coach.py add-task <任务名称> [重要性(1-5)]")
+            return
+        
+        parts = args.rsplit(' ', 1)
+        importance = 3
+        task_name = args
+        
+        if len(parts) == 2 and parts[1].isdigit():
+            task_name = parts[0].strip()
+            importance = int(parts[1])
+            
+        profile = coach.get_profile()
+        if not profile:
+            print("未找到学习档案")
+            return
+            
+        task = coach.add_task(profile["id"], task_name, importance)
+        if task:
+            print(f"✅ 已添加任务：{task_name} (重要性: {importance})")
+            print(json.dumps(task, ensure_ascii=False, indent=2))
+        else:
+            print("添加任务失败")
+            
     elif action == "update-task":
         if not args:
             print("用法：python coach.py update-task <任务名称> <掌握度>")
@@ -1173,4 +1195,9 @@ def main():
 
 
 if __name__ == "__main__":
+    if sys.platform == "win32":
+        import sys
+        import io
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
     main()
