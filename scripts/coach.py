@@ -16,6 +16,7 @@
 import json
 import os
 import re
+import shlex
 import sys
 import random
 from datetime import datetime
@@ -38,6 +39,176 @@ def safe_topic_dirname(topic):
     cleaned = re.sub(r'[<>:"/\\|?*]', "_", (topic or "").strip())
     cleaned = re.sub(r"\s+", " ", cleaned).strip(" .")
     return cleaned or "未命名主题"
+
+
+def parse_start_arguments(tokens):
+    """解析 start 命令参数，支持多词主题。"""
+    topic_parts = []
+    level = "未设置"
+    goal = "未设置"
+    time_budget = None
+    i = 0
+
+    while i < len(tokens):
+        token = tokens[i]
+        if token == "--level" and i + 1 < len(tokens):
+            level = tokens[i + 1]
+            i += 2
+            continue
+        if token == "--goal" and i + 1 < len(tokens):
+            goal = tokens[i + 1]
+            i += 2
+            continue
+        if token == "--time-budget" and i + 1 < len(tokens):
+            time_budget = tokens[i + 1]
+            i += 2
+            continue
+
+        topic_parts.append(token)
+        i += 1
+
+    topic = " ".join(topic_parts).strip()
+    return topic, level, goal, time_budget
+
+
+DOMAIN_BLUEPRINTS = {
+    "bim_engineering": {
+        "keywords": [
+            "bim", "ifc", "revit", "工程", "建筑", "机电", "构件", "模型审核",
+            "审图", "图结构", "数字孪生", "施工"
+        ],
+        "label": "BIM/工程数字化",
+        "tasks": [
+            {
+                "name_template": "{topic}业务场景与审核目标梳理",
+                "importance": 5,
+                "desc_template": "明确{topic}的业务边界、目标指标、输入输出与典型问题。"
+            },
+            {
+                "name_template": "{topic}数据源解析与模型结构理解",
+                "importance": 5,
+                "desc_template": "识别 IFC/Revit 等数据来源、构件关系与工程语义。"
+            },
+            {
+                "name_template": "{topic}构件属性映射与图表示建模",
+                "importance": 5,
+                "desc_template": "把构件、属性、空间或连接关系映射成可计算的图或结构化表示。"
+            },
+            {
+                "name_template": "{topic}规则逻辑与算法方案设计",
+                "importance": 4,
+                "desc_template": "设计审核规则、模型流程或规则与模型融合方案。"
+            },
+            {
+                "name_template": "{topic}实战验证、报告输出与闭环优化",
+                "importance": 4,
+                "desc_template": "落地验证审核效果，输出报告，并根据误报漏报持续优化。"
+            }
+        ]
+    },
+    "ai_ml": {
+        "keywords": [
+            "机器学习", "深度学习", "神经网络", "gnn", "transformer", "llm",
+            "大模型", "attention", "监督学习", "强化学习", "embedding", "图神经"
+        ],
+        "label": "AI/机器学习",
+        "tasks": [
+            {
+                "name_template": "{topic}问题定义与任务形式化",
+                "importance": 5,
+                "desc_template": "明确{topic}要解决的任务类型、评价指标与训练目标。"
+            },
+            {
+                "name_template": "{topic}核心概念、数学直觉与关键机制",
+                "importance": 5,
+                "desc_template": "理解{topic}的核心机制、关键公式和直觉解释。"
+            },
+            {
+                "name_template": "{topic}数据表示、特征构造与输入输出设计",
+                "importance": 5,
+                "desc_template": "明确样本、标签、特征、结构信息与模型输入输出。"
+            },
+            {
+                "name_template": "{topic}训练流程、调参与误差分析",
+                "importance": 4,
+                "desc_template": "掌握训练流程、超参数影响、常见失败模式与调试方法。"
+            },
+            {
+                "name_template": "{topic}应用落地、泛化验证与复盘迁移",
+                "importance": 4,
+                "desc_template": "把{topic}迁移到真实场景，并分析泛化能力与适用边界。"
+            }
+        ]
+    },
+    "programming": {
+        "keywords": [
+            "python", "java", "javascript", "typescript", "react", "vue", "go",
+            "rust", "c++", "框架", "前端", "后端", "api", "django", "flask", "spring"
+        ],
+        "label": "编程语言/框架",
+        "tasks": [
+            {
+                "name_template": "{topic}核心语法与基本心智模型",
+                "importance": 5,
+                "desc_template": "建立{topic}的语法基础、执行模型与常用抽象。"
+            },
+            {
+                "name_template": "{topic}关键组件与运行机制",
+                "importance": 5,
+                "desc_template": "理解框架组件、生命周期、依赖关系和底层机制。"
+            },
+            {
+                "name_template": "{topic}典型项目结构与常见模式",
+                "importance": 4,
+                "desc_template": "熟悉工程目录、常见设计模式和最佳实践。"
+            },
+            {
+                "name_template": "{topic}调试、测试与性能优化",
+                "importance": 4,
+                "desc_template": "掌握调试方法、测试策略以及性能与可维护性优化。"
+            },
+            {
+                "name_template": "{topic}项目实战与知识迁移",
+                "importance": 4,
+                "desc_template": "通过项目把{topic}迁移到真实开发场景。"
+            }
+        ]
+    },
+    "data_systems": {
+        "keywords": [
+            "数据库", "sql", "etl", "数据仓库", "spark", "hadoop", "kafka",
+            "airflow", "数据治理", "数据分析", "pipeline", "湖仓"
+        ],
+        "label": "数据工程/数据系统",
+        "tasks": [
+            {
+                "name_template": "{topic}业务问题与数据链路梳理",
+                "importance": 5,
+                "desc_template": "明确{topic}中的业务目标、数据来源与链路边界。"
+            },
+            {
+                "name_template": "{topic}数据模型、表结构与存储设计",
+                "importance": 5,
+                "desc_template": "理解表结构、索引、分区、建模方式与存储权衡。"
+            },
+            {
+                "name_template": "{topic}处理流程、调度与质量控制",
+                "importance": 5,
+                "desc_template": "掌握采集、清洗、调度、重跑与质量校验流程。"
+            },
+            {
+                "name_template": "{topic}性能、稳定性与异常排查",
+                "importance": 4,
+                "desc_template": "定位瓶颈、优化资源、处理延迟和失败重试。"
+            },
+            {
+                "name_template": "{topic}场景应用、报表服务与复盘优化",
+                "importance": 4,
+                "desc_template": "把数据系统能力连接到分析、服务和持续优化闭环。"
+            }
+        ]
+    }
+}
 
 
 # ==================== 苏格拉底追问配置 ====================
@@ -242,6 +413,21 @@ class SocraticQuestioner:
             "dimensions_explored": list(self.used_dimensions),
             "history": self.history
         }
+
+    def dump_state(self):
+        """导出追问状态，便于跨命令恢复。"""
+        return {
+            "history": self.history,
+            "current_round": self.current_round,
+            "used_dimensions": list(self.used_dimensions)
+        }
+
+    def load_state(self, state):
+        """恢复追问状态。"""
+        state = state or {}
+        self.history = state.get("history", [])
+        self.current_round = state.get("current_round", 0)
+        self.used_dimensions = set(state.get("used_dimensions", []))
     
     def format_question(self, question):
         """格式化问题用于显示"""
@@ -274,6 +460,7 @@ class LearningCoach:
         self.current_profile = None
         self.socratic_questioner = SocraticQuestioner()  # 苏格拉底追问引擎
         self.socratic_mode = False  # 当前是否处于苏格拉底模式
+        self._cleanup_duplicate_profiles()
     
     # ==================== 数据管理 ====================
     
@@ -300,11 +487,317 @@ class LearningCoach:
         """保存认知循环日志"""
         with open(RECORDS_FILE, 'w', encoding='utf-8') as f:
             json.dump(self.records, f, ensure_ascii=False, indent=2)
+
+    def _parse_iso_datetime(self, value):
+        """解析 ISO 时间字符串，失败时返回最小时间，便于排序。"""
+        if not value:
+            return datetime.min
+        try:
+            return datetime.fromisoformat(value)
+        except ValueError:
+            return datetime.min
+
+    def _is_blank_profile(self, profile):
+        """判断是否为空白学习档案。"""
+        tasks = profile.get("tasks") or []
+        current_task = profile.get("current_task")
+        progress = profile.get("overall_progress", 0) or 0
+        return not tasks and not current_task and progress <= 0
+
+    def _ensure_profile_defaults(self, profile):
+        """补齐学习档案缺失字段，兼容旧数据结构。"""
+        changed = False
+        defaults = {
+            "time_budget": None,
+            "tasks": [],
+            "current_task": None,
+            "overall_progress": 0.0,
+            "socratic_mode": None,
+            "socratic_round_count": 0,
+            "socratic_session": None,
+            "monitoring_history": [],
+            "last_assessment": None,
+            "last_strategy": [],
+            "task_tree_metadata": None,
+            "status": "active"
+        }
+
+        for key, value in defaults.items():
+            if key not in profile:
+                profile[key] = list(value) if isinstance(value, list) else value
+                changed = True
+
+        return changed
+
+    def _cleanup_duplicate_profiles(self):
+        """按主题清理重复档案，优先保留有学习进度的记录。"""
+        profiles = self.profiles.get("profiles", [])
+        grouped = {}
+        changed = False
+
+        for profile in profiles:
+            if self._ensure_profile_defaults(profile):
+                changed = True
+
+        for profile in profiles:
+            topic = (profile.get("topic") or "").strip()
+            grouped.setdefault(topic, []).append(profile)
+
+        cleaned_profiles = []
+        for topic, topic_profiles in grouped.items():
+            if len(topic_profiles) == 1:
+                cleaned_profiles.extend(topic_profiles)
+                continue
+
+            non_blank_profiles = [p for p in topic_profiles if not self._is_blank_profile(p)]
+            blank_profiles = [p for p in topic_profiles if self._is_blank_profile(p)]
+
+            if non_blank_profiles:
+                non_blank_profiles.sort(
+                    key=lambda p: self._parse_iso_datetime(p.get("updated_at")),
+                    reverse=True
+                )
+                cleaned_profiles.extend(non_blank_profiles)
+                if blank_profiles:
+                    changed = True
+                continue
+
+            # 同主题全部为空白时，仅保留最近一条。
+            blank_profiles.sort(
+                key=lambda p: self._parse_iso_datetime(p.get("updated_at")),
+                reverse=True
+            )
+            cleaned_profiles.append(blank_profiles[0])
+            if len(blank_profiles) > 1:
+                changed = True
+
+        if changed:
+            self.profiles["profiles"] = cleaned_profiles
+            self._save_profiles()
+
+    def _monitoring_history(self, profile):
+        """返回档案的监控历史列表。"""
+        return profile.setdefault("monitoring_history", [])
+
+    def _latest_monitoring(self, profile):
+        """获取最近一次元认知监控记录。"""
+        history = self._monitoring_history(profile)
+        return history[-1] if history else None
+
+    def _restore_socratic_session(self, profile):
+        """从档案恢复苏格拉底会话状态。"""
+        session = profile.get("socratic_session")
+        if not session or not session.get("active"):
+            return False
+
+        self.current_profile = profile
+        self.socratic_mode = True
+        self.socratic_questioner.load_state(session.get("questioner_state"))
+        profile["socratic_round_count"] = self.socratic_questioner.current_round
+        return True
+
+    def _persist_socratic_session(self, profile, task_name):
+        """持久化苏格拉底会话，支持跨命令继续。"""
+        profile["socratic_session"] = {
+            "active": True,
+            "task_name": task_name,
+            "questioner_state": self.socratic_questioner.dump_state()
+        }
+        profile["socratic_round_count"] = self.socratic_questioner.current_round
+        self._save_profiles()
+
+    def _clear_socratic_session(self, profile):
+        """清理已结束的苏格拉底会话。"""
+        profile["socratic_session"] = None
+        profile["socratic_round_count"] = 0
+        self._save_profiles()
+
+    def _default_learning_tasks(self, topic, goal=None):
+        """为新主题生成通用学习路径。"""
+        focus = goal or topic
+        return [
+            {
+                "name": f"{topic}概念地图与关键术语",
+                "importance": 5,
+                "desc": f"建立{topic}的基本词汇表、问题空间与核心对象。"
+            },
+            {
+                "name": f"{topic}核心机制与基本原理",
+                "importance": 5,
+                "desc": f"理解{topic}成立的关键机制、主流程与因果关系。"
+            },
+            {
+                "name": f"{topic}典型示例拆解与理解",
+                "importance": 4,
+                "desc": f"通过代表性案例理解{topic}如何在真实问题中工作。"
+            },
+            {
+                "name": f"{topic}动手练习与错误修正",
+                "importance": 4,
+                "desc": f"通过练习暴露误解并修正关于{topic}的薄弱点。"
+            },
+            {
+                "name": f"{focus}应用实践与迁移复盘",
+                "importance": 3,
+                "desc": f"把{topic}迁移到目标场景，并复盘哪些能力已经稳定掌握。"
+            }
+        ]
+
+    def _infer_domain_blueprint(self, topic, goal=None):
+        """根据主题和目标推断最匹配的领域蓝图。"""
+        haystack = f"{topic or ''} {goal or ''}".lower()
+        best_key = None
+        best_score = 0
+        matched_keywords = []
+
+        for domain_key, blueprint in DOMAIN_BLUEPRINTS.items():
+            hits = [kw for kw in blueprint["keywords"] if kw.lower() in haystack]
+            if len(hits) > best_score:
+                best_key = domain_key
+                best_score = len(hits)
+                matched_keywords = hits
+
+        if best_key:
+            return {
+                "domain": best_key,
+                "label": DOMAIN_BLUEPRINTS[best_key]["label"],
+                "matched_keywords": matched_keywords,
+                "source": "domain_blueprint"
+            }
+
+        return {
+            "domain": "generic",
+            "label": "通用学习路径",
+            "matched_keywords": [],
+            "source": "generic_fallback"
+        }
+
+    def _build_tasks_from_blueprint(self, topic, goal=None):
+        """按领域蓝图或通用模板生成任务树。"""
+        metadata = self._infer_domain_blueprint(topic, goal)
+        if metadata["domain"] == "generic":
+            task_specs = self._default_learning_tasks(topic, goal)
+        else:
+            task_specs = []
+            blueprint = DOMAIN_BLUEPRINTS[metadata["domain"]]
+            focus = goal or topic
+            for item in blueprint["tasks"]:
+                task_specs.append({
+                    "name": item["name_template"].format(topic=topic, goal=goal or topic, focus=focus),
+                    "importance": item["importance"],
+                    "desc": item["desc_template"].format(topic=topic, goal=goal or topic, focus=focus)
+                })
+
+        tasks = []
+        for item in task_specs:
+            tasks.append({
+                "name": item["name"],
+                "mastery": 0.0,
+                "time_spent": "0h",
+                "status": "not_started",
+                "importance": item["importance"],
+                "last_study": None,
+                "desc": item.get("desc", "暂无详细说明")
+            })
+
+        return tasks, metadata
+
+    def _ensure_task_tree_metadata(self, profile):
+        """为旧档案补齐任务树元信息。"""
+        if profile.get("task_tree_metadata"):
+            return False
+        profile["task_tree_metadata"] = self._infer_domain_blueprint(
+            profile.get("topic"),
+            profile.get("goal")
+        )
+        return True
+
+    def _bootstrap_profile_tasks(self, profile):
+        """在新档案为空时生成默认学习路径。"""
+        if profile.get("tasks"):
+            self._ensure_task_tree_metadata(profile)
+            return
+
+        tasks, metadata = self._build_tasks_from_blueprint(profile["topic"], profile.get("goal"))
+        profile["tasks"] = tasks
+        profile["task_tree_metadata"] = metadata
+        next_task = self.select_task(profile)
+        profile["current_task"] = next_task["name"] if next_task else None
+        profile["updated_at"] = datetime.now().isoformat()
+
+    def _record_monitoring_cycle(self, profile, task_name, mastery, strategy, source, notes=None, time_spent="0h"):
+        """记录一次完整的监控-控制循环。"""
+        assessment = {
+            "mastery": mastery,
+            "source": source
+        }
+        record = {
+            "timestamp": datetime.now().isoformat(),
+            "task_name": task_name,
+            "assessment": assessment,
+            "strategy": strategy,
+            "notes": notes or ""
+        }
+        self._monitoring_history(profile).append(record)
+        profile["last_assessment"] = assessment
+        profile["last_strategy"] = strategy
+        profile["updated_at"] = datetime.now().isoformat()
+        self.create_record(profile["id"], {"name": task_name}, assessment, strategy, time_spent)
+        self._save_profiles()
+        return record
     
     # ==================== 学习档案管理 ====================
     
     def create_profile(self, topic, level, goal, time_budget=None):
         """创建学习档案"""
+        topic = (topic or "").strip()
+
+        # 同主题已有学习进度时，直接复用最新档案，避免生成重复空白记录。
+        existing_profiles = [
+            p for p in self.profiles["profiles"]
+            if (p.get("topic") or "").strip() == topic
+        ]
+        progressed_profiles = [p for p in existing_profiles if not self._is_blank_profile(p)]
+        if progressed_profiles:
+            progressed_profiles.sort(
+                key=lambda p: self._parse_iso_datetime(p.get("updated_at")),
+                reverse=True
+            )
+            profile = progressed_profiles[0]
+            self._ensure_profile_defaults(profile)
+            if self._ensure_task_tree_metadata(profile):
+                self._save_profiles()
+            self.current_profile = profile
+            self.socratic_mode = profile.get("socratic_mode") == "SOCRATIC_PRIORITY"
+            return profile
+
+        # 同主题已有空白档案时，复用并刷新元数据，而不是继续追加。
+        blank_profiles = [p for p in existing_profiles if self._is_blank_profile(p)]
+        if blank_profiles:
+            blank_profiles.sort(
+                key=lambda p: self._parse_iso_datetime(p.get("updated_at")),
+                reverse=True
+            )
+            profile = blank_profiles[0]
+            profile.update({
+                "level": level,
+                "goal": goal,
+                "time_budget": time_budget,
+                "updated_at": datetime.now().isoformat(),
+                "status": "active",
+                "socratic_mode": "SOCRATIC_PRIORITY" if level == "零基础" else None
+            })
+            self._ensure_profile_defaults(profile)
+            self._bootstrap_profile_tasks(profile)
+            self._save_profiles()
+            self.current_profile = profile
+            if profile.get("socratic_mode") == "SOCRATIC_PRIORITY":
+                self.socratic_questioner.reset()
+                self.socratic_mode = True
+            else:
+                self.socratic_mode = False
+            return profile
+
         # 判断是否启用苏格拉底优先模式
         socratic_mode = "SOCRATIC_PRIORITY" if level == "零基础" else None
         
@@ -321,9 +814,14 @@ class LearningCoach:
             "current_task": None,
             "overall_progress": 0.0,
             "socratic_mode": socratic_mode,  # 苏格拉底模式标志
-            "socratic_round_count": 0  # 当前追问轮数
+            "socratic_round_count": 0,  # 当前追问轮数
+            "monitoring_history": [],
+            "last_assessment": None,
+            "last_strategy": [],
+            "task_tree_metadata": None
         }
         
+        self._bootstrap_profile_tasks(profile)
         self.profiles["profiles"].append(profile)
         self._save_profiles()
         
@@ -341,17 +839,24 @@ class LearningCoach:
         if topic:
             for p in self.profiles["profiles"]:
                 if p["topic"] == topic:
+                    self._ensure_profile_defaults(p)
+                    self._ensure_task_tree_metadata(p)
                     return p
             return None
         elif self.current_profile:
+            self._ensure_profile_defaults(self.current_profile)
+            self._ensure_task_tree_metadata(self.current_profile)
             return self.current_profile
         elif self.profiles["profiles"]:
             # 返回最近更新的档案
-            return sorted(
+            profile = sorted(
                 self.profiles["profiles"],
                 key=lambda x: x["updated_at"],
                 reverse=True
             )[0]
+            self._ensure_profile_defaults(profile)
+            self._ensure_task_tree_metadata(profile)
+            return profile
         return None
     
     def list_profiles(self):
@@ -363,12 +868,14 @@ class LearningCoach:
         profile = self.get_profile(topic)
         if profile:
             self.current_profile = profile
+            profile["updated_at"] = datetime.now().isoformat()
             # 根据档案的苏格拉底模式设置状态
             if profile.get("socratic_mode") == "SOCRATIC_PRIORITY":
                 self.socratic_mode = True
                 self.socratic_questioner.reset()
             else:
                 self.socratic_mode = False
+            self._save_profiles()
             return profile
         return None
     
@@ -398,6 +905,9 @@ class LearningCoach:
         """添加学习任务"""
         for p in self.profiles["profiles"]:
             if p["id"] == profile_id:
+                for existing in p["tasks"]:
+                    if existing["name"] == task_name:
+                        return existing
                 task = {
                     "name": task_name,
                     "mastery": 0.0,
@@ -407,6 +917,8 @@ class LearningCoach:
                     "last_study": None
                 }
                 p["tasks"].append(task)
+                if not p.get("current_task"):
+                    p["current_task"] = task_name
                 p["updated_at"] = datetime.now().isoformat()
                 self._save_profiles()
                 return task
@@ -416,10 +928,16 @@ class LearningCoach:
         """更新任务进度"""
         for p in self.profiles["profiles"]:
             if p["id"] == profile_id:
+                normalized_mastery = max(0.0, min(1.0, mastery))
                 for t in p["tasks"]:
                     if t["name"] == task_name:
-                        t["mastery"] = mastery
-                        t["status"] = "in_progress" if mastery < 0.8 else "completed"
+                        t["mastery"] = normalized_mastery
+                        if normalized_mastery <= 0:
+                            t["status"] = "not_started"
+                        elif normalized_mastery < 0.8:
+                            t["status"] = "in_progress"
+                        else:
+                            t["status"] = "completed"
                         if time_spent:
                             t["time_spent"] = time_spent
                         t["last_study"] = datetime.now().isoformat()
@@ -427,9 +945,27 @@ class LearningCoach:
                         # 更新整体进度
                         if p["tasks"]:
                             p["overall_progress"] = sum(t["mastery"] for t in p["tasks"]) / len(p["tasks"])
-                        
+
+                        next_task = self.select_task(p)
+                        p["current_task"] = next_task["name"] if next_task else None
+
+                        mastery_result = self.calculate_mastery({
+                            "surface": normalized_mastery,
+                            "semantic": normalized_mastery,
+                            "intuitive": normalized_mastery
+                        })
+                        strategy = self.determine_control_actions(p, task_name, mastery_result)
+                        self._record_monitoring_cycle(
+                            p,
+                            task_name,
+                            mastery_result,
+                            strategy,
+                            "task_update",
+                            notes="基于显式任务掌握度更新触发控制决策。",
+                            time_spent=t.get("time_spent", "0h")
+                        )
+
                         p["updated_at"] = datetime.now().isoformat()
-                        self._save_profiles()
                         return t
         return None
     
@@ -524,6 +1060,25 @@ class LearningCoach:
                 "尝试教给他人",
                 "应用到新场景"
             ]
+
+    def determine_control_actions(self, profile, task_name, mastery_result):
+        """根据监控结果生成控制决策。"""
+        overall = mastery_result["overall"]
+        strategy = []
+        next_task = self.select_task(profile)
+
+        if overall < 0.3:
+            strategy.append(f"继续聚焦当前任务：{task_name}")
+        elif overall < 0.8:
+            strategy.append(f"在当前任务上补强薄弱点：{task_name}")
+        else:
+            if next_task and next_task["name"] != task_name:
+                strategy.append(f"切换到下一关键任务：{next_task['name']}")
+            else:
+                strategy.append("进入综合复盘或项目实践迁移")
+
+        strategy.extend(self.recommend_strategy(overall))
+        return strategy
     
     # ==================== 苏格拉底式评估 ====================
     
@@ -546,11 +1101,11 @@ class LearningCoach:
         
         # 更新档案中的追问计数
         self.current_profile["socratic_round_count"] = 0
-        self._save_profiles()
         
         # 生成第一个问题
         question = self.socratic_questioner.generate_question(task_name)
-        
+        self._persist_socratic_session(self.current_profile, task_name)
+
         return question
     
     def continue_socratic_assessment(self, answer):
@@ -568,18 +1123,21 @@ class LearningCoach:
                 "reason": 原因说明
             }
         """
+        if not self.current_profile:
+            return {"action": "error", "reason": "当前没有活动的学习档案"}
+
+        session = self.current_profile.get("socratic_session") or {}
+        task_name = session.get("task_name") or self.current_profile.get("current_task") or "当前任务"
         result = self.socratic_questioner.process_answer(answer)
         
         # 更新追问计数
-        if self.current_profile:
-            self.current_profile["socratic_round_count"] = self.socratic_questioner.current_round
-            self._save_profiles()
+        self.current_profile["socratic_round_count"] = self.socratic_questioner.current_round
         
         if result["action"] == "continue":
             # 生成下一个问题
-            task_name = self.current_profile.get("current_task") if self.current_profile else "当前任务"
             next_question = self.socratic_questioner.generate_question(task_name)
             if next_question:
+                self._persist_socratic_session(self.current_profile, task_name)
                 return {
                     "action": "continue",
                     "question": next_question,
@@ -587,26 +1145,51 @@ class LearningCoach:
                 }
             else:
                 # 无法生成更多问题，转为解释
-                return {
-                    "action": "explain",
-                    "summary": self.socratic_questioner.get_summary(),
-                    "reason": "追问完成"
-                }
-        
-        elif result["action"] == "explain":
+                result = {"action": "explain", "reason": "追问完成"}
+
+        if result["action"] == "explain":
             # 用户请求直接解释或达到上限
             self.socratic_mode = False
+            mastery = self.socratic_mastery_from_history()
+            strategy = self.determine_control_actions(self.current_profile, task_name, mastery)
+            self._record_monitoring_cycle(
+                self.current_profile,
+                task_name,
+                mastery,
+                strategy,
+                "socratic_assessment",
+                notes=result["reason"]
+            )
+            summary = self.socratic_questioner.get_summary()
+            self._clear_socratic_session(self.current_profile)
             return {
                 "action": "explain",
-                "summary": self.socratic_questioner.get_summary(),
+                "summary": summary,
+                "mastery": mastery,
+                "strategy": strategy,
                 "reason": result["reason"]
             }
-        else:
-            return {
-                "action": "complete",
-                "summary": self.socratic_questioner.get_summary(),
-                "reason": result["reason"]
-            }
+
+        mastery = self.socratic_mastery_from_history()
+        strategy = self.determine_control_actions(self.current_profile, task_name, mastery)
+        self._record_monitoring_cycle(
+            self.current_profile,
+            task_name,
+            mastery,
+            strategy,
+            "socratic_assessment",
+            notes=result["reason"]
+        )
+        summary = self.socratic_questioner.get_summary()
+        self._clear_socratic_session(self.current_profile)
+        self.socratic_mode = False
+        return {
+            "action": "complete",
+            "summary": summary,
+            "mastery": mastery,
+            "strategy": strategy,
+            "reason": result["reason"]
+        }
     
     def socratic_mastery_from_history(self):
         """
@@ -764,16 +1347,24 @@ class LearningCoach:
             return None
         
         records = self.get_records(profile["id"])
+        latest_monitoring = self._latest_monitoring(profile)
+        next_task = self.select_task(profile)
         
         report = {
             "topic": profile["topic"],
             "level": profile["level"],
             "goal": profile["goal"],
+            "task_tree_metadata": profile.get("task_tree_metadata"),
             "created_at": profile["created_at"],
             "updated_at": profile["updated_at"],
             "overall_progress": profile["overall_progress"],
             "tasks": profile["tasks"],
             "current_task": profile["current_task"],
+            "next_task": next_task["name"] if next_task else None,
+            "last_assessment": profile.get("last_assessment"),
+            "last_strategy": profile.get("last_strategy", []),
+            "latest_monitoring": latest_monitoring,
+            "monitoring_history_count": len(profile.get("monitoring_history", [])),
             "total_records": len(records),
             "total_time": self._calculate_total_time(records)
         }
@@ -877,22 +1468,16 @@ def interactive_mode():
                 if not args:
                     print("请指定学习主题，例如：start 机器学习")
                     continue
-                # 解析可选参数
-                parts = args.split()
-                topic = parts[0]
-                level = "未设置"
-                goal = "未设置"
-                
-                # 检查是否有 --level 参数
-                for i, p in enumerate(parts):
-                    if p == "--level" and i + 1 < len(parts):
-                        level = parts[i + 1]
-                    elif p == "--goal" and i + 1 < len(parts):
-                        goal = parts[i + 1]
-                
-                profile = coach.create_profile(topic, level, goal)
+                topic, level, goal, time_budget = parse_start_arguments(shlex.split(args))
+                if not topic:
+                    print("请指定学习主题，例如：start 机器学习")
+                    continue
+                profile = coach.create_profile(topic, level, goal, time_budget)
                 print(f"✅ 已创建学习档案：{topic}")
                 print(f"档案ID：{profile['id']}")
+                if profile.get("task_tree_metadata"):
+                    print(f"任务树：{profile['task_tree_metadata'].get('label', '通用学习路径')}")
+                print(f"当前任务：{profile.get('current_task') or '尚未生成'}")
                 if profile.get('socratic_mode') == "SOCRATIC_PRIORITY":
                     print("🎯 已自动启用苏格拉底优先模式（零基础）")
             
@@ -901,8 +1486,25 @@ def interactive_mode():
                 if not profile:
                     print("未找到学习档案，请先用 start 命令创建")
                     continue
+                coach.current_profile = profile
                 print(f"继续学习：{profile['topic']}")
                 print(f"当前进度：{profile['overall_progress']*100:.1f}%")
+                print(f"当前任务：{profile.get('current_task') or '暂无'}")
+                if profile.get("last_strategy"):
+                    print("建议策略：")
+                    for item in profile["last_strategy"]:
+                        print(f"  - {item}")
+
+            elif action == "switch":
+                if not args:
+                    print("请指定要切换的学习主题，例如：switch 机器学习")
+                    continue
+                profile = coach.switch_profile(args)
+                if not profile:
+                    print("未找到对应学习档案")
+                    continue
+                print(f"✅ 已切换到：{profile['topic']}")
+                print(f"当前任务：{profile.get('current_task') or '暂无'}")
             
             elif action == "list":
                 profiles = coach.list_profiles()
@@ -919,14 +1521,23 @@ def interactive_mode():
                 if not profile:
                     print("未找到学习档案")
                     continue
+                coach.current_profile = profile
                 report = coach.generate_report(profile)
                 print(f"📊 学习进度报告：{report['topic']}")
+                if report.get("task_tree_metadata"):
+                    print(f"任务树：{report['task_tree_metadata'].get('label', '通用学习路径')}")
                 print(f"整体进度：{report['overall_progress']*100:.1f}%")
                 print(f"总学习时间：{report['total_time']}")
+                print(f"当前任务：{report['current_task'] or '暂无'}")
+                print(f"下一步：{report['next_task'] or '进入复盘或项目实践'}")
+                if report.get("last_strategy"):
+                    print("最近控制策略：")
+                    for item in report["last_strategy"]:
+                        print(f"  - {item}")
                 if report['tasks']:
                     print("任务列表：")
                     for t in report['tasks']:
-                        status = "✅" if t['mastery'] >= 0.8 else "⏳"
+                        status = "✅" if t['mastery'] >= 0.8 else "⏳" if t['mastery'] > 0 else "⭕"
                         print(f"  {status} {t['name']} - {t['mastery']*100:.0f}%")
             
             elif action == "report":
@@ -970,7 +1581,8 @@ def interactive_mode():
                 if not args:
                     print("请提供你的回答")
                     continue
-                if not coach.socratic_mode:
+                profile = coach.get_profile()
+                if not profile or not coach._restore_socratic_session(profile):
                     print("当前不在苏格拉底模式，请先使用 socratic 命令开始评估")
                     continue
                 result = coach.continue_socratic_assessment(args)
@@ -983,16 +1595,21 @@ def interactive_mode():
                     print(f"已探索维度：{', '.join(summary.get('dimensions_explored', []))}")
                     print(f"追问轮数：{summary.get('total_rounds', 0)}")
                     print("\n正在生成直接解释...")
-                    # 计算基于追问历史的掌握度
-                    mastery = coach.socratic_mastery_from_history()
+                    mastery = result.get("mastery", {})
                     print(f"\n📊 估计掌握度：{mastery['overall']*100:.0f}%")
+                    for item in result.get("strategy", []):
+                        print(f"  - {item}")
                 else:
                     print(f"\n✅ {result['reason']}")
                     summary = result.get("summary", {})
-                    print(f"评估完成！")
+                    print(f"评估完成！共探索 {summary.get('total_rounds', 0)} 轮。")
+                    print(f"📊 估计掌握度：{result['mastery']['overall']*100:.0f}%")
+                    for item in result.get("strategy", []):
+                        print(f"  - {item}")
             
             elif action == "explain":
-                if not coach.socratic_mode:
+                profile = coach.get_profile()
+                if not profile or not coach._restore_socratic_session(profile):
                     print("当前不在苏格拉底模式")
                     continue
                 # 用户请求直接解释
@@ -1000,8 +1617,10 @@ def interactive_mode():
                 print(f"\n📚 {result['reason']}")
                 summary = result.get("summary", {})
                 print(f"已探索维度：{', '.join(summary.get('dimensions_explored', []))}")
-                mastery = coach.socratic_mastery_from_history()
+                mastery = result.get("mastery", {})
                 print(f"\n📊 估计掌握度：{mastery['overall']*100:.0f}%")
+                for item in result.get("strategy", []):
+                    print(f"  - {item}")
                 print("\n正在生成直接解释...")
             
             else:
@@ -1034,20 +1653,12 @@ def main():
             print("用法：python coach.py start <主题>")
             print("可选参数：--level <基础等级> --goal <学习目标>")
             return
-        # 解析参数
-        parts = args.split()
-        topic = parts[0]
-        level = "未设置"
-        goal = "未设置"
-        
-        for i, p in enumerate(parts):
-            if p == "--level" and i + 1 < len(parts):
-                level = parts[i + 1]
-            elif p == "--goal" and i + 1 < len(parts):
-                goal = parts[i + 1]
-        
-        profile = coach.create_profile(topic, level, goal)
-        print(f"✅ 已创建学习档案：{args}")
+        topic, level, goal, time_budget = parse_start_arguments(shlex.split(args))
+        if not topic:
+            print("用法：python coach.py start <主题>")
+            return
+        profile = coach.create_profile(topic, level, goal, time_budget)
+        print(f"✅ 已创建学习档案：{topic}")
         if profile.get('socratic_mode') == "SOCRATIC_PRIORITY":
             print("🎯 已自动启用苏格拉底优先模式（零基础）")
         print(json.dumps(profile, ensure_ascii=False, indent=2))
@@ -1063,6 +1674,29 @@ def main():
             return
         report = coach.generate_report(profile)
         print(json.dumps(report, ensure_ascii=False, indent=2))
+    
+    elif action == "continue":
+        profile = coach.get_profile(args)
+        if not profile:
+            print("未找到学习档案")
+            return
+        coach.current_profile = profile
+        print(json.dumps({
+            "topic": profile["topic"],
+            "overall_progress": profile["overall_progress"],
+            "current_task": profile.get("current_task"),
+            "last_strategy": profile.get("last_strategy", [])
+        }, ensure_ascii=False, indent=2))
+    
+    elif action == "switch":
+        if not args:
+            print("用法：python coach.py switch <主题>")
+            return
+        profile = coach.switch_profile(args)
+        if not profile:
+            print("未找到学习档案")
+            return
+        print(json.dumps(profile, ensure_ascii=False, indent=2))
         
     elif action == "add-task":
         if not args:
@@ -1113,11 +1747,6 @@ def main():
             
         task = coach.update_task(profile["id"], task_name, mastery)
         if task:
-            # 自动推进到下一个任务
-            next_task = coach.select_task(profile)
-            if next_task and next_task["name"] != profile.get("current_task"):
-                coach.update_profile(profile["id"], {"current_task": next_task["name"]})
-                
             print(json.dumps(task, ensure_ascii=False, indent=2))
         else:
             print(f"未找到任务：{task_name}")
@@ -1167,22 +1796,19 @@ def main():
         
         # 恢复状态
         profile = coach.get_profile()
-        if profile:
-            coach.current_profile = profile
-            coach.socratic_mode = True if profile.get("socratic_mode") == "SOCRATIC_PRIORITY" else False
-            # 恢复追问轮数
-            coach.socratic_questioner.current_round = profile.get("socratic_round_count", 0)
-            
+        if not profile or not coach._restore_socratic_session(profile):
+            print("当前没有进行中的苏格拉底会话，请先使用 socratic 命令")
+            return
         result = coach.continue_socratic_assessment(args)
         print(json.dumps(result, ensure_ascii=False, indent=2))
     
     elif action == "explain":
+        profile = coach.get_profile()
+        if not profile or not coach._restore_socratic_session(profile):
+            print("当前没有进行中的苏格拉底会话")
+            return
         result = coach.continue_socratic_assessment("直接解释")
-        mastery = coach.socratic_mastery_from_history()
-        print(json.dumps({
-            "result": result,
-            "mastery": mastery
-        }, ensure_ascii=False, indent=2))
+        print(json.dumps(result, ensure_ascii=False, indent=2))
     
     elif action == "toggle-socratic":
         enable = args.lower() == "on" if args else True

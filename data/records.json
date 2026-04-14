@@ -1,0 +1,82 @@
+{
+  "records": [
+    {
+      "id": "85c2bd53-97e8-4a6a-9189-48cd24eec304",
+      "profile_id": "5351efbd-3c02-4759-bf33-4a4101856951",
+      "timestamp": "2026-04-14T11:23:07.653509",
+      "task": {
+        "name": "BIM模型审核中应用GNN+Transformer技术的落地实践实现业务场景与审核目标梳理"
+      },
+      "assessment": {
+        "mastery": {
+          "overall": 0.4,
+          "breakdown": {
+            "surface": 0.2,
+            "semantic": 0.6,
+            "intuitive": 0.2
+          }
+        },
+        "source": "socratic_assessment"
+      },
+      "decision": [
+        "在当前任务上补强薄弱点：BIM模型审核中应用GNN+Transformer技术的落地实践实现业务场景与审核目标梳理",
+        "阅读进阶文章",
+        "完成练习题",
+        "动手实践"
+      ],
+      "time_spent": "0h"
+    },
+    {
+      "id": "c9fd795d-ef4b-4764-a361-3e981f595f15",
+      "profile_id": "5351efbd-3c02-4759-bf33-4a4101856951",
+      "timestamp": "2026-04-14T14:40:51.539504",
+      "task": {
+        "name": "BIM模型审核中应用GNN+Transformer技术的落地实践实现数据源解析与模型结构理解"
+      },
+      "assessment": {
+        "mastery": {
+          "overall": 0.4,
+          "breakdown": {
+            "surface": 0.2,
+            "semantic": 0.6,
+            "intuitive": 0.2
+          }
+        },
+        "source": "socratic_assessment"
+      },
+      "decision": [
+        "在当前任务上补强薄弱点：BIM模型审核中应用GNN+Transformer技术的落地实践实现数据源解析与模型结构理解",
+        "阅读进阶文章",
+        "完成练习题",
+        "动手实践"
+      ],
+      "time_spent": "0h"
+    },
+    {
+      "id": "7a6f7234-f120-428a-acbe-ba11f66b70dc",
+      "profile_id": "39e86835-c86a-458c-a37b-6017c6d253c5",
+      "timestamp": "2026-04-14T15:14:10.203221",
+      "task": {
+        "name": "GNN原理问题定义与任务形式化"
+      },
+      "assessment": {
+        "mastery": {
+          "overall": 0.255,
+          "breakdown": {
+            "surface": 0.06666666666666667,
+            "semantic": 0.35,
+            "intuitive": 0.3
+          }
+        },
+        "source": "socratic_assessment"
+      },
+      "decision": [
+        "继续聚焦当前任务：GNN原理问题定义与任务形式化",
+        "观看入门视频教程",
+        "阅读基础概念文章",
+        "寻找前置知识补充"
+      ],
+      "time_spent": "0h"
+    }
+  ]
+}

@@ -54,52 +54,12 @@
       "current_task": "BIM模型审核实战案例",
       "overall_progress": 0.9,
       "socratic_mode": "SOCRATIC_PRIORITY",
-      "socratic_round_count": 0
-    },
-    {
-      "id": "7d198ee3-be79-44a1-b5d5-68591ba9b46c",
-      "topic": "BIM模型审核中应用GNN+Transformer技术的落地实践实现",
-      "level": "有一定基础",
-      "goal": "系统学习落地实现",
-      "time_budget": null,
-      "created_at": "2026-04-10T16:47:02.523433",
-      "updated_at": "2026-04-10T16:47:02.523449",
-      "status": "active",
-      "tasks": [],
-      "current_task": null,
-      "overall_progress": 0.0,
-      "socratic_mode": null,
-      "socratic_round_count": 0
-    },
-    {
-      "id": "7bbca33c-fe0c-4121-b703-acd879d2cd6b",
-      "topic": "BIM模型审核中应用GNN+Transformer技术的落地实践实现",
-      "level": "有一定基础",
-      "goal": "系统学习落地实现",
-      "time_budget": null,
-      "created_at": "2026-04-13T09:16:26.797706",
-      "updated_at": "2026-04-13T09:16:26.797722",
-      "status": "active",
-      "tasks": [],
-      "current_task": null,
-      "overall_progress": 0.0,
-      "socratic_mode": null,
-      "socratic_round_count": 0
-    },
-    {
-      "id": "6f251860-c0a1-4975-9de4-5c17f49e8992",
-      "topic": "BIM模型审核中应用GNN+Transformer技术的落地实践实现",
-      "level": "有一定基础",
-      "goal": "系统学习落地实现",
-      "time_budget": null,
-      "created_at": "2026-04-13T09:18:27.983335",
-      "updated_at": "2026-04-13T09:18:27.983349",
-      "status": "active",
-      "tasks": [],
-      "current_task": null,
-      "overall_progress": 0.0,
-      "socratic_mode": null,
-      "socratic_round_count": 0
+      "socratic_round_count": 0,
+      "socratic_session": null,
+      "monitoring_history": [],
+      "last_assessment": null,
+      "last_strategy": [],
+      "task_tree_metadata": null
     },
     {
       "id": "5351efbd-3c02-4759-bf33-4a4101856951",
@@ -108,54 +68,243 @@
       "goal": "系统学习落地实现",
       "time_budget": null,
       "created_at": "2026-04-13T17:32:42.496116",
-      "updated_at": "2026-04-13T17:39:55.689101",
+      "updated_at": "2026-04-14T14:40:51.539488",
       "status": "active",
       "tasks": [
         {
-          "name": "BIM数据解析与图结构转换：实现IFC/Revit模型到图数据的工程化处理",
-          "mastery": 0.6,
-          "time_spent": "0h",
-          "status": "in_progress",
-          "importance": 5,
-          "last_study": "2026-04-13T17:39:55.687944"
-        },
-        {
-          "name": "特征工程与属性映射：提取BIM构件几何与属性特征并映射到图节点",
+          "name": "BIM模型审核中应用GNN+Transformer技术的落地实践实现业务场景与审核目标梳理",
           "mastery": 0.0,
           "time_spent": "0h",
           "status": "not_started",
           "importance": 5,
-          "last_study": null
+          "last_study": null,
+          "desc": "明确BIM模型审核中应用GNN+Transformer技术的落地实践实现的业务边界、目标指标、输入输出与典型问题。"
         },
         {
-          "name": "GNN+Transformer混合模型开发：设计适用于BIM审核的层次化注意力机制架构",
+          "name": "BIM模型审核中应用GNN+Transformer技术的落地实践实现数据源解析与模型结构理解",
+          "mastery": 0.0,
+          "time_spent": "0h",
+          "status": "not_started",
+          "importance": 5,
+          "last_study": null,
+          "desc": "识别 IFC/Revit 等数据来源、构件关系与工程语义。"
+        },
+        {
+          "name": "BIM模型审核中应用GNN+Transformer技术的落地实践实现构件属性映射与图表示建模",
+          "mastery": 0.0,
+          "time_spent": "0h",
+          "status": "not_started",
+          "importance": 5,
+          "last_study": null,
+          "desc": "把构件、属性、空间或连接关系映射成可计算的图或结构化表示。"
+        },
+        {
+          "name": "BIM模型审核中应用GNN+Transformer技术的落地实践实现规则逻辑与算法方案设计",
           "mastery": 0.0,
           "time_spent": "0h",
           "status": "not_started",
           "importance": 4,
-          "last_study": null
+          "last_study": null,
+          "desc": "设计审核规则、模型流程或规则与模型融合方案。"
         },
         {
-          "name": "自动化审核规则引擎开发：集成模型预测与硬性规范校验的混合审核系统",
+          "name": "BIM模型审核中应用GNN+Transformer技术的落地实践实现实战验证、报告输出与闭环优化",
           "mastery": 0.0,
           "time_spent": "0h",
           "status": "not_started",
           "importance": 4,
-          "last_study": null
-        },
-        {
-          "name": "系统部署与实战闭环：实现自动化审核报告输出并根据反馈进行模型微调",
-          "mastery": 0.0,
-          "time_spent": "0h",
-          "status": "not_started",
-          "importance": 3,
-          "last_study": null
+          "last_study": null,
+          "desc": "落地验证审核效果，输出报告，并根据误报漏报持续优化。"
         }
       ],
-      "current_task": "特征工程与属性映射：提取BIM构件几何与属性特征并映射到图节点",
-      "overall_progress": 0.12,
+      "current_task": "BIM模型审核中应用GNN+Transformer技术的落地实践实现数据源解析与模型结构理解",
+      "overall_progress": 0.0,
       "socratic_mode": "SOCRATIC_PRIORITY",
-      "socratic_round_count": 0
+      "socratic_round_count": 0,
+      "socratic_session": null,
+      "monitoring_history": [
+        {
+          "timestamp": "2026-04-14T11:23:07.653477",
+          "task_name": "BIM模型审核中应用GNN+Transformer技术的落地实践实现业务场景与审核目标梳理",
+          "assessment": {
+            "mastery": {
+              "overall": 0.4,
+              "breakdown": {
+                "surface": 0.2,
+                "semantic": 0.6,
+                "intuitive": 0.2
+              }
+            },
+            "source": "socratic_assessment"
+          },
+          "strategy": [
+            "在当前任务上补强薄弱点：BIM模型审核中应用GNN+Transformer技术的落地实践实现业务场景与审核目标梳理",
+            "阅读进阶文章",
+            "完成练习题",
+            "动手实践"
+          ],
+          "notes": "已达到最大追问轮数"
+        },
+        {
+          "timestamp": "2026-04-14T14:40:51.539471",
+          "task_name": "BIM模型审核中应用GNN+Transformer技术的落地实践实现数据源解析与模型结构理解",
+          "assessment": {
+            "mastery": {
+              "overall": 0.4,
+              "breakdown": {
+                "surface": 0.2,
+                "semantic": 0.6,
+                "intuitive": 0.2
+              }
+            },
+            "source": "socratic_assessment"
+          },
+          "strategy": [
+            "在当前任务上补强薄弱点：BIM模型审核中应用GNN+Transformer技术的落地实践实现数据源解析与模型结构理解",
+            "阅读进阶文章",
+            "完成练习题",
+            "动手实践"
+          ],
+          "notes": "已达到最大追问轮数"
+        }
+      ],
+      "last_assessment": {
+        "mastery": {
+          "overall": 0.4,
+          "breakdown": {
+            "surface": 0.2,
+            "semantic": 0.6,
+            "intuitive": 0.2
+          }
+        },
+        "source": "socratic_assessment"
+      },
+      "last_strategy": [
+        "在当前任务上补强薄弱点：BIM模型审核中应用GNN+Transformer技术的落地实践实现数据源解析与模型结构理解",
+        "阅读进阶文章",
+        "完成练习题",
+        "动手实践"
+      ],
+      "task_tree_metadata": {
+        "domain": "bim_engineering",
+        "label": "BIM/工程数字化",
+        "matched_keywords": [
+          "bim",
+          "模型审核"
+        ],
+        "source": "domain_blueprint"
+      }
+    },
+    {
+      "id": "39e86835-c86a-458c-a37b-6017c6d253c5",
+      "topic": "GNN原理",
+      "level": "零基础",
+      "goal": "系统学习",
+      "time_budget": null,
+      "created_at": "2026-04-14T15:12:16.801093",
+      "updated_at": "2026-04-14T15:14:10.203204",
+      "status": "active",
+      "tasks": [
+        {
+          "name": "GNN原理问题定义与任务形式化",
+          "mastery": 0.0,
+          "time_spent": "0h",
+          "status": "not_started",
+          "importance": 5,
+          "last_study": null,
+          "desc": "明确GNN原理要解决的任务类型、评价指标与训练目标。"
+        },
+        {
+          "name": "GNN原理核心概念、数学直觉与关键机制",
+          "mastery": 0.0,
+          "time_spent": "0h",
+          "status": "not_started",
+          "importance": 5,
+          "last_study": null,
+          "desc": "理解GNN原理的核心机制、关键公式和直觉解释。"
+        },
+        {
+          "name": "GNN原理数据表示、特征构造与输入输出设计",
+          "mastery": 0.0,
+          "time_spent": "0h",
+          "status": "not_started",
+          "importance": 5,
+          "last_study": null,
+          "desc": "明确样本、标签、特征、结构信息与模型输入输出。"
+        },
+        {
+          "name": "GNN原理训练流程、调参与误差分析",
+          "mastery": 0.0,
+          "time_spent": "0h",
+          "status": "not_started",
+          "importance": 4,
+          "last_study": null,
+          "desc": "掌握训练流程、超参数影响、常见失败模式与调试方法。"
+        },
+        {
+          "name": "GNN原理应用落地、泛化验证与复盘迁移",
+          "mastery": 0.0,
+          "time_spent": "0h",
+          "status": "not_started",
+          "importance": 4,
+          "last_study": null,
+          "desc": "把GNN原理迁移到真实场景，并分析泛化能力与适用边界。"
+        }
+      ],
+      "current_task": "GNN原理问题定义与任务形式化",
+      "overall_progress": 0.0,
+      "socratic_mode": "SOCRATIC_PRIORITY",
+      "socratic_round_count": 0,
+      "monitoring_history": [
+        {
+          "timestamp": "2026-04-14T15:14:10.203187",
+          "task_name": "GNN原理问题定义与任务形式化",
+          "assessment": {
+            "mastery": {
+              "overall": 0.255,
+              "breakdown": {
+                "surface": 0.06666666666666667,
+                "semantic": 0.35,
+                "intuitive": 0.3
+              }
+            },
+            "source": "socratic_assessment"
+          },
+          "strategy": [
+            "继续聚焦当前任务：GNN原理问题定义与任务形式化",
+            "观看入门视频教程",
+            "阅读基础概念文章",
+            "寻找前置知识补充"
+          ],
+          "notes": "用户选择直接解释"
+        }
+      ],
+      "last_assessment": {
+        "mastery": {
+          "overall": 0.255,
+          "breakdown": {
+            "surface": 0.06666666666666667,
+            "semantic": 0.35,
+            "intuitive": 0.3
+          }
+        },
+        "source": "socratic_assessment"
+      },
+      "last_strategy": [
+        "继续聚焦当前任务：GNN原理问题定义与任务形式化",
+        "观看入门视频教程",
+        "阅读基础概念文章",
+        "寻找前置知识补充"
+      ],
+      "task_tree_metadata": {
+        "domain": "ai_ml",
+        "label": "AI/机器学习",
+        "matched_keywords": [
+          "gnn"
+        ],
+        "source": "domain_blueprint"
+      },
+      "socratic_session": null
     }
   ]
 }
